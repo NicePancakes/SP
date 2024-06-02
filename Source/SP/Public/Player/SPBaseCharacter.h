@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "SPBaseCharacter.generated.h"
 
+class USpringArmComponent;
 class UCameraComponent;
 
 UCLASS()
@@ -27,6 +28,9 @@ private:
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UCameraComponent> CameraComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
 	
 
 };
