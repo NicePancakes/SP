@@ -8,6 +8,7 @@ class UTextRenderComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class USPHealthComponent;
+class USPWeaponComponent;
 
 UCLASS()
 class SP_API ASPBaseCharacter : public ACharacter
@@ -58,6 +59,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UTextRenderComponent> HealthTextComponent;
 
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	TObjectPtr<USPWeaponComponent> WeaponComponent;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	TObjectPtr<UAnimMontage> DeathAnimMontage;
 
@@ -67,10 +71,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	FVector2D LandedDamage = FVector2D(10.0f, 100.0f);
 
-	UPROPERTY(EditDefaultsOnly, Category = "")
+	UPROPERTY(EditDefaultsOnly, Category = "LifeTime")
 	float LifeTime = 5.0f;
 	
 	
-	bool IsWantRun = false;
-	bool IsMoveForward = false;
+	bool bIsWantRun = false;
+	bool bIsMoveForward = false;
 };

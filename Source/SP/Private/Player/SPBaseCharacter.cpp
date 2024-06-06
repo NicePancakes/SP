@@ -1,12 +1,15 @@
 #include "Player/SPBaseCharacter.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/SPCharacterMovementComponent.h"
 #include "Components/SPHealthComponent.h"
+#include "Components/SPWeaponComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Controller.h"
 #include "Engine/DamageEvents.h"
+#include "Weapons/SPBaseWeapon.h"
 
 
 ASPBaseCharacter::ASPBaseCharacter(const FObjectInitializer& ObjectInitializer)
@@ -26,6 +29,8 @@ ASPBaseCharacter::ASPBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>(TEXT("HealthTextComponent"));
 	HealthTextComponent->SetupAttachment(GetRootComponent());
 
+	WeaponComponent = CreateDefaultSubobject<USPWeaponComponent>(TEXT("WeaponComponent"));
+
 	HealthComponent->GetOnDeath().BindUObject(this, &ThisClass::OnDeath);
 	HealthComponent->GetOnHealthChanged().BindUObject(this, &ThisClass::OnHealthChanged);
 	LandedDelegate.AddUniqueDynamic(this, &ThisClass::OnGroundLanded);
@@ -43,7 +48,7 @@ void ASPBaseCharacter::MoveForward(float Amount)
 {
 	if(Amount == 0.0f) { return; }
 	AddMovementInput(GetActorForwardVector(), Amount);
-	IsMoveForward = Amount > 0.0f;
+	bIsMoveForward = Amount > 0.0f;
 }
 
 void ASPBaseCharacter::MoveRight(float Amount)
@@ -54,12 +59,12 @@ void ASPBaseCharacter::MoveRight(float Amount)
 
 void ASPBaseCharacter::OnStartRunning()
 {
-	IsWantRun = true;
+	bIsWantRun = true;
 }
 
 void ASPBaseCharacter::OnStopRunning()
 {
-	IsWantRun = false;
+	bIsWantRun = false;
 }
 
 void ASPBaseCharacter::OnDeath()
@@ -72,6 +77,9 @@ void ASPBaseCharacter::OnDeath()
 	{
 		Controller->ChangeState(NAME_Spectating);
 	}
+
+	GetCapsuleComponent()->SetCollisionResponseToAllChannels(ECR_Ignore);
+	WeaponComponent->StopFire();
 }
 
 void ASPBaseCharacter::OnHealthChanged(float NewHealth)
@@ -89,6 +97,8 @@ void ASPBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
 }
 
+
+
 void ASPBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -98,9 +108,16 @@ void ASPBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	check(PlayerInputComponent);
+	check(WeaponComponent);
+
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ThisClass::Jump);
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ThisClass::OnStartRunning);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &ThisClass::OnStopRunning);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent.Get(), &USPWeaponComponent::StartFire);
+	PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent.Get(), &USPWeaponComponent::StopFire);
+	PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent.Get(), &USPWeaponComponent::NextWeapon);
+	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent.Get(), &USPWeaponComponent::Reload);
 	
 	PlayerInputComponent->BindAxis("MoveForward", this, &ThisClass::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &ThisClass::MoveRight);
@@ -111,7 +128,7 @@ void ASPBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 bool ASPBaseCharacter::IsRunning() const
 {
-	return IsWantRun && IsMoveForward && !GetVelocity().IsZero();
+	return bIsWantRun && bIsMoveForward && !GetVelocity().IsZero();
 }
 
 float ASPBaseCharacter::GetMovementDirection() const
