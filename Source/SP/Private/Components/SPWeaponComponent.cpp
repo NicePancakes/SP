@@ -194,6 +194,26 @@ void USPWeaponComponent::Reload()
 	ChangeClip();
 }
 
+bool USPWeaponComponent::GetWeaponUIData(FWeaponUIData& UIData) const
+{
+	if(IsValid(CurrentWeapon))
+	{
+		UIData = CurrentWeapon->GetUIData();
+		return true;
+	}
+	return false;
+}
+
+bool USPWeaponComponent::GetWeaponAmmoData(FAmmoData& AmmoData) const
+{
+	if(IsValid(CurrentWeapon))
+	{
+		AmmoData = CurrentWeapon->GetAmmoData();
+		return true;
+	}
+	return false;
+}
+
 void USPWeaponComponent::OnEmptyClip()
 {
 	ChangeClip();

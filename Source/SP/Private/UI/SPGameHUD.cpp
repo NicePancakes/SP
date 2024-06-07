@@ -1,11 +1,25 @@
 #include "UI/SPGameHUD.h"
+
+#include "Blueprint/UserWidget.h"
 #include "Engine/Canvas.h"
+#include "UI/PlayerHUDWidget.h"
+
+void ASPGameHUD::BeginPlay()
+{
+	Super::BeginPlay();
+
+	PlayerHUDWidget = CreateWidget<UPlayerHUDWidget>(GetWorld(), PlayerHUDWidgetClass);
+	if(IsValid(PlayerHUDWidget))
+	{
+		PlayerHUDWidget->AddToViewport();
+	}
+}
 
 void ASPGameHUD::DrawHUD()
 {
 	Super::DrawHUD();
 
-	DrawCrossHair();
+	//DrawCrossHair();
 }
 
 void ASPGameHUD::DrawCrossHair()

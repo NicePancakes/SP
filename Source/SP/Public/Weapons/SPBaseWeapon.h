@@ -12,15 +12,27 @@ struct FAmmoData
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category = "Ammo")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
 	int32 Bullets;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Ammo", meta = (EditCondition = "!bIsInfinite"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo", meta = (EditCondition = "!bIsInfinite"))
 	int32 Clips;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Ammo")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Ammo")
 	bool bIsInfinite;
+};
+
+USTRUCT(BlueprintType)
+struct FWeaponUIData
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+	TObjectPtr<UTexture2D> MainWeaponIcon;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+	TObjectPtr<UTexture2D> CrossHairWeaponIcon;
 };
 
 UCLASS()
@@ -40,6 +52,8 @@ public:
 	bool CanReload() const;
 
 	FOnClipEmptySignature& GetOnClipEmptySignature() { return OnClipEmpty; }
+	FWeaponUIData& GetUIData() { return UIData; }
+	FAmmoData& GetAmmoData() { return CurrentAmmo; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -56,8 +70,6 @@ protected:
 	bool IsAmmoEmpty();
 	bool IsClipEmpty();
 	
-	void LogAmmo();
-	
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<USkeletalMeshComponent> WeaponMesh;
@@ -69,11 +81,13 @@ protected:
 	float TraceLength = 1500.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-	FAmmoData DefaultAmmo {};
+	FAmmoData DefaultAmmo;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	FWeaponUIData UIData;
 
 	UPROPERTY()
 	FAmmoData CurrentAmmo;
 
 	FOnClipEmptySignature OnClipEmpty;
-	
 };

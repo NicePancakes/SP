@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Weapons/SPBaseWeapon.h"
 #include "SPWeaponComponent.generated.h"
 
 class ASPBaseWeapon;
@@ -32,6 +33,9 @@ public:
 	void StopFire();
 	void NextWeapon();
 	void Reload();
+
+	bool GetWeaponUIData(FWeaponUIData& UIData) const;
+	bool GetWeaponAmmoData(FAmmoData& AmmoData) const;
 
 protected:
 	virtual void BeginPlay() override;

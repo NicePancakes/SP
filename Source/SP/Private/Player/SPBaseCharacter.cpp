@@ -31,8 +31,8 @@ ASPBaseCharacter::ASPBaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	WeaponComponent = CreateDefaultSubobject<USPWeaponComponent>(TEXT("WeaponComponent"));
 
-	HealthComponent->GetOnDeath().BindUObject(this, &ThisClass::OnDeath);
-	HealthComponent->GetOnHealthChanged().BindUObject(this, &ThisClass::OnHealthChanged);
+	HealthComponent->GetOnDeath().AddUObject(this, &ThisClass::OnDeath);
+	HealthComponent->GetOnHealthChanged().AddUObject(this, &ThisClass::OnHealthChanged);
 	LandedDelegate.AddUniqueDynamic(this, &ThisClass::OnGroundLanded);
 }
 

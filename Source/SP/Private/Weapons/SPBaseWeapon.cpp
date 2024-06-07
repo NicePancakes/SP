@@ -86,7 +86,6 @@ void ASPBaseWeapon::DecreaseAmmo()
 	{
 		CurrentAmmo.Bullets--;
 	}
-	LogAmmo();
 	
 	if(IsClipEmpty() && !IsAmmoEmpty())
 	{
@@ -112,17 +111,9 @@ void ASPBaseWeapon::ChangeClip()
 		CurrentAmmo.Clips--;
 	}
 	CurrentAmmo.Bullets = DefaultAmmo.Bullets;
-	UE_LOG(LogTemp, Error, TEXT("--------------Change clip--------------"));
 }
 
 bool ASPBaseWeapon::CanReload() const
 {
 	return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0;
-}
-
-void ASPBaseWeapon::LogAmmo()
-{
-	FString AmmoInfo = "Ammo: " + FString::FromInt(CurrentAmmo.Bullets) + " / ";
-	AmmoInfo += CurrentAmmo.bIsInfinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *AmmoInfo);
 }

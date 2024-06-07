@@ -10,14 +10,17 @@ class SP_API USPHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-	DECLARE_DELEGATE(FOnDeath)
-	DECLARE_DELEGATE_OneParam(FOnHealthChanged, float)
+	DECLARE_MULTICAST_DELEGATE(FOnDeath)
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
 
 public:	
 	USPHealthComponent();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category = "Health")
 	bool IsDead() const { return FMath::IsNearlyZero(CurrentHealth); }
+
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float GetHealthPercent() const { return CurrentHealth / MaxHealth; }
 
 	float GetCurrentHealth() const { return CurrentHealth;}
 	FOnDeath& GetOnDeath() { return OnDeath; }

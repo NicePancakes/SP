@@ -9,6 +9,7 @@ void USPHealthComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	check(MaxHealth > 0);
 	SetHealth(MaxHealth);
 
 	AActor* Owner = GetOwner();
@@ -24,13 +25,13 @@ void USPHealthComponent::OnTakeAnyDamage(
 	if(Damage <= 0.0f || CurrentHealth <=0.0f) { return; }
 
 	SetHealth(CurrentHealth - Damage);
-	OnHealthChanged.ExecuteIfBound(CurrentHealth);
+	OnHealthChanged.Broadcast(CurrentHealth);
 
 	GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
 	
 	if(IsDead())
 	{
-		OnDeath.ExecuteIfBound();
+		OnDeath.Broadcast();
 	}
 	else if(AutoHeal)
 	{
@@ -41,7 +42,7 @@ void USPHealthComponent::OnTakeAnyDamage(
 void USPHealthComponent::HealUpdate()
 {
 	SetHealth(CurrentHealth + HealModifier);
-	OnHealthChanged.Execute(CurrentHealth);
+	OnHealthChanged.Broadcast(CurrentHealth);
 
 	if(FMath::IsNearlyEqual(CurrentHealth, MaxHealth))
 	{
@@ -52,5 +53,5 @@ void USPHealthComponent::HealUpdate()
 void USPHealthComponent::SetHealth(float NewHealth)
 {
 	CurrentHealth = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
-	OnHealthChanged.Execute(CurrentHealth);
+	OnHealthChanged.Broadcast(CurrentHealth);
 }
