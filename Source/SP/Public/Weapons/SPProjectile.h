@@ -6,6 +6,7 @@
 
 class UProjectileMovementComponent;
 class USphereComponent;
+class USPWeaponFXComponent;
 
 UCLASS()
 class SP_API ASPProjectile : public AActor
@@ -40,6 +41,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	float DamageAmount = 50.0f;
+
+	UPROPERTY(VisibleAnywhere, Category = "VFX")
+	TObjectPtr<USPWeaponFXComponent> WeaponFXComponent;
 	
 	UPROPERTY(EditDefaultsOnly)
 	float LifeTime = 5.0f;

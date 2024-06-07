@@ -2,6 +2,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Weapons/Components/SPWeaponFXComponent.h"
 
 ASPProjectile::ASPProjectile()
 {
@@ -11,11 +12,14 @@ ASPProjectile::ASPProjectile()
 	CollisionComponent->InitSphereRadius(SphereCollisionRadius);
 	CollisionComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	CollisionComponent->SetCollisionResponseToAllChannels(ECR_Block);
+	CollisionComponent->bReturnMaterialOnMove = true;
 	SetRootComponent(CollisionComponent);
 
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
 	MovementComponent->InitialSpeed = 2000.0f;
 	MovementComponent->ProjectileGravityScale = 0.0f;
+
+	WeaponFXComponent = CreateDefaultSubobject<USPWeaponFXComponent>(TEXT("WeaponFXComponent"));
 
 	CollisionComponent->OnComponentHit.AddUniqueDynamic(this, &ThisClass::OnProjectileHit);
 }
@@ -26,6 +30,8 @@ void ASPProjectile::BeginPlay()
 
 	check(MovementComponent);
 	check(CollisionComponent);
+	check(WeaponFXComponent);
+	
 	MovementComponent->Velocity = ShotDirection * MovementComponent->InitialSpeed;
 	SetLifeSpan(LifeTime);
 }
@@ -37,6 +43,7 @@ void ASPProjectile::OnProjectileHit(
 
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), DamageAmount, GetActorLocation(), DamageRadius, UDamageType::StaticClass(), {GetOwner()}, this, GetController(), bDoFullDamage);
 	DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 32, FColor::Red, false, 5.0f, 0, 3.0f);
+	WeaponFXComponent->PlayImpactFX(Hit);
 	
 	Destroy();
 }

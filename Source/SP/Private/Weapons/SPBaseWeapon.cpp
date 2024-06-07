@@ -76,8 +76,9 @@ void ASPBaseWeapon::MakeHit(FHitResult& HitResult, const FVector& TraceStart, co
 {
 	FCollisionQueryParams CollisionQueryParams;
 	CollisionQueryParams.AddIgnoredActor(GetOwner());
+	CollisionQueryParams.bReturnPhysicalMaterial = true;
 	
-	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility);
+	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, CollisionQueryParams);
 }
 
 void ASPBaseWeapon::DecreaseAmmo()
