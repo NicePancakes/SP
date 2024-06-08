@@ -5,6 +5,8 @@
 #include "SPRifleWeapon.generated.h"
 
 class USPWeaponFXComponent;
+class UNiagaraComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class SP_API ASPRifleWeapon : public ASPBaseWeapon
@@ -22,6 +24,10 @@ protected:
 	virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const override;
 	void MakeDamage(const FHitResult& HitResult);
 
+	void InitMuzzleFX();
+	void SetMuzzleFXVisibility(bool bIsVisible);
+	void SpawnTraceFX(const FVector& StartTrace, const FVector& EndTrace);
+
 protected:
 	UPROPERTY(EditDefaultsOnly)
 	float DamageAmount = 10.0f;
@@ -32,8 +38,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	float BulletSpread = 1.5f;
 
-	UPROPERTY(VisibleAnywhere, Category = "VFX")
+	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	TObjectPtr<UNiagaraSystem> TraceFX;
+
+	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	FName TraceTargetName = "TraceTarget";
+
+	UPROPERTY(EditDefaultsOnly, Category = "VFX")
 	TObjectPtr<USPWeaponFXComponent> WeaponFXComponent;
+
+	UPROPERTY()
+	TObjectPtr<UNiagaraComponent> MuzzleFXComponent;
 
 	bool bIsFirstShot = true;
 

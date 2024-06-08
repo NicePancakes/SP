@@ -4,6 +4,7 @@
 #include "Components/ActorComponent.h"
 #include "SPHealthComponent.generated.h"
 
+class UCameraShakeBase;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SP_API USPHealthComponent : public UActorComponent
@@ -11,7 +12,7 @@ class SP_API USPHealthComponent : public UActorComponent
 	GENERATED_BODY()
 
 	DECLARE_MULTICAST_DELEGATE(FOnDeath)
-	DECLARE_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float)
+	DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHealthChanged, float, float)
 
 public:	
 	USPHealthComponent();
@@ -34,7 +35,8 @@ private:
 	void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	void HealUpdate();
-	void SetHealth(float NewHealth);
+	void SetHealth(float Health);
+	void PlayCameraShake();
 
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1000.0"))
@@ -51,6 +53,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Heal", meta = (EditCondition = "AutoHeal"))
 	float HealModifier = 5.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	TSubclassOf<UCameraShakeBase> CameraShake;
 	
 	float CurrentHealth = 0.0f;
 

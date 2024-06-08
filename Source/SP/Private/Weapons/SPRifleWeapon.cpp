@@ -1,6 +1,8 @@
 #include "Weapons/SPRifleWeapon.h"
 #include "Engine/DamageEvents.h"
 #include "Weapons/Components/SPWeaponFXComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 ASPRifleWeapon::ASPRifleWeapon()
 {
@@ -16,6 +18,7 @@ void ASPRifleWeapon::BeginPlay()
 
 void ASPRifleWeapon::StartFire()
 {
+	InitMuzzleFX();
 	GetWorld()->GetTimerManager().SetTimer(ShotTimerHandle, this, &ThisClass::MakeShot, TimeBetweenShots, true);
 	MakeShot();
 	bIsFirstShot = false;
@@ -25,6 +28,7 @@ void ASPRifleWeapon::StopFire()
 {
 	GetWorld()->GetTimerManager().ClearTimer(ShotTimerHandle);
 	bIsFirstShot = true;
+	SetMuzzleFXVisibility(false);
 }
 
 void ASPRifleWeapon::MakeShot()
@@ -35,16 +39,15 @@ void ASPRifleWeapon::MakeShot()
 	{
 		FHitResult HitResult;
 		MakeHit(HitResult, TraceStart, TraceEnd);
-		
+
+		FVector TraceFXEnd = TraceEnd;
 		if(HitResult.bBlockingHit)
 		{
+			TraceFXEnd = HitResult.ImpactPoint;
 			MakeDamage(HitResult);
 			WeaponFXComponent->PlayImpactFX(HitResult);
 		}
-		else
-		{
-			DrawDebugLine(GetWorld(), GetMuzzleWorldLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
-		}
+		SpawnTraceFX(GetMuzzleWorldLocation(), TraceFXEnd);
 		DecreaseAmmo();
 	}
 	else
@@ -74,6 +77,33 @@ void ASPRifleWeapon::MakeDamage(const FHitResult& HitResult)
 	if(IsValid(DamageActor))
 	{
 		DamageActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this);
+	}
+}
+
+void ASPRifleWeapon::InitMuzzleFX()
+{
+	if(!IsValid(MuzzleFXComponent))
+	{
+		MuzzleFXComponent = SpawnMuzzleFX();
+	}
+	SetMuzzleFXVisibility(true);
+}
+
+void ASPRifleWeapon::SetMuzzleFXVisibility(bool bIsVisible)
+{
+	if(IsValid(MuzzleFXComponent))
+	{
+		MuzzleFXComponent->SetPaused(!bIsVisible);
+		MuzzleFXComponent->SetVisibility(bIsVisible);
+	}
+}
+
+void ASPRifleWeapon::SpawnTraceFX(const FVector& StartTrace, const FVector& EndTrace)
+{
+	UNiagaraComponent* TraceFXComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceFX, StartTrace);
+	if(IsValid(TraceFXComponent))
+	{
+		TraceFXComponent->SetVariableVec3(TraceTargetName, EndTrace);
 	}
 }
 

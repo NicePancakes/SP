@@ -42,6 +42,8 @@ void ASPBaseCharacter::BeginPlay()
 	
 	check(HealthComponent);
 	check(HealthTextComponent);
+	check(GetCharacterMovement());
+	check(GetMesh());
 }
 
 void ASPBaseCharacter::MoveForward(float Amount)
@@ -69,7 +71,16 @@ void ASPBaseCharacter::OnStopRunning()
 
 void ASPBaseCharacter::OnDeath()
 {
-	PlayAnimMontage(DeathAnimMontage);
+	if(bUseDeadAnimMontage)
+	{
+		PlayAnimMontage(DeathAnimMontage);
+	}
+	else
+	{
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		GetMesh()->SetSimulatePhysics(true);
+	}
+	
 	GetCharacterMovement()->DisableMovement();
 	SetLifeSpan(LifeTime);
 
@@ -82,7 +93,7 @@ void ASPBaseCharacter::OnDeath()
 	WeaponComponent->StopFire();
 }
 
-void ASPBaseCharacter::OnHealthChanged(float NewHealth)
+void ASPBaseCharacter::OnHealthChanged(float NewHealth, float HealthDelta)
 {
 	HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), NewHealth)));
 }

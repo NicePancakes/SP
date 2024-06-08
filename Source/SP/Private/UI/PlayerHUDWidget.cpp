@@ -13,9 +13,18 @@ void UPlayerHUDWidget::NativeDestruct()
 	Super::NativeDestruct();
 }
 
+bool UPlayerHUDWidget::Initialize()
+{
+	USPHealthComponent* HealthComponent = GetComponent<USPHealthComponent>();
+	if(IsValid(HealthComponent))
+	{
+		HealthComponent->GetOnHealthChanged().AddUObject(this, &ThisClass::OnHealthChanged);
+	}
+	return Super::Initialize();
+}
+
 float UPlayerHUDWidget::GetHealthPercent() const
 {
-	//USPHealthComponent* HealthComponent = GetHealthComponent();
 	USPHealthComponent* HealthComponent = GetComponent<USPHealthComponent>();
 	if(IsValid(HealthComponent))
 	{
@@ -26,7 +35,6 @@ float UPlayerHUDWidget::GetHealthPercent() const
 
 bool UPlayerHUDWidget::GetCurrentWeaponUIData(FWeaponUIData& UIData) const
 {
-	//USPWeaponComponent* WeaponComponent = GetWeaponComponent();
 	USPWeaponComponent* WeaponComponent = GetComponent<USPWeaponComponent>();
 	if(IsValid(WeaponComponent))
 	{
@@ -57,4 +65,12 @@ bool UPlayerHUDWidget::IsPlayerSpectating() const
 {
 	AController* Controller = GetOwningPlayer();
 	return IsValid(Controller) && Controller->GetStateName() == NAME_Spectating;
+}
+
+void UPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
+{
+	if(HealthDelta < 0)
+	{
+		OnTakeDamage();
+	}
 }

@@ -1,4 +1,7 @@
 #include "Components/SPHealthComponent.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/Controller.h"
+#include "Camera/CameraShakeBase.h"
 
 USPHealthComponent::USPHealthComponent()
 {
@@ -25,7 +28,6 @@ void USPHealthComponent::OnTakeAnyDamage(
 	if(Damage <= 0.0f || CurrentHealth <=0.0f) { return; }
 
 	SetHealth(CurrentHealth - Damage);
-	OnHealthChanged.Broadcast(CurrentHealth);
 
 	GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
 	
@@ -37,12 +39,13 @@ void USPHealthComponent::OnTakeAnyDamage(
 	{
 		GetWorld()->GetTimerManager().SetTimer(HealTimerHandle, this, &ThisClass::HealUpdate, HealUpdateTime, true, HealDelay);
 	}
+
+	PlayCameraShake();
 }
 
 void USPHealthComponent::HealUpdate()
 {
 	SetHealth(CurrentHealth + HealModifier);
-	OnHealthChanged.Broadcast(CurrentHealth);
 
 	if(FMath::IsNearlyEqual(CurrentHealth, MaxHealth))
 	{
@@ -50,8 +53,23 @@ void USPHealthComponent::HealUpdate()
 	}
 }
 
-void USPHealthComponent::SetHealth(float NewHealth)
+void USPHealthComponent::SetHealth(float Health)
 {
-	CurrentHealth = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
-	OnHealthChanged.Broadcast(CurrentHealth);
+	float NewHealth = FMath::Clamp(Health, 0.0f, MaxHealth);
+	float HealthDelta = NewHealth - CurrentHealth;
+	CurrentHealth = NewHealth;
+	OnHealthChanged.Broadcast(CurrentHealth, HealthDelta);
+}
+
+void USPHealthComponent::PlayCameraShake()
+{
+	APawn* Player = Cast<APawn>(GetOwner());
+	if(IsValid(Player) && !IsDead())
+	{
+		APlayerController* Controller = Player->GetController<APlayerController>();
+		if(IsValid(Controller) && IsValid(Controller->PlayerCameraManager))
+		{
+			Controller->PlayerCameraManager->StartCameraShake(CameraShake);
+		}
+	}
 }

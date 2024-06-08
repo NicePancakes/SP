@@ -41,7 +41,7 @@ private:
 	void OnDeath();
 
 	UFUNCTION()
-	void OnHealthChanged(float NewHealth);
+	void OnHealthChanged(float NewHealth, float HealthDelta);
 
 	UFUNCTION()
 	void OnGroundLanded(const FHitResult& Hit);
@@ -62,8 +62,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<USPWeaponComponent> WeaponComponent;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	UPROPERTY(EditDefaultsOnly, Category = "Animation", meta = (EditCondition = "bUseDeadAnimMontage"))
 	TObjectPtr<UAnimMontage> DeathAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Animation")
+	bool bUseDeadAnimMontage = true;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Movement")
 	FVector2D LandedDamageVelocity = FVector2D(900.0f, 1200.0f);

@@ -35,5 +35,6 @@ void ASPLauncherWeapon::MakeShot()
 			Projectile->FinishSpawning(SpawnTransform);
 		}
 		DecreaseAmmo();
+		SpawnMuzzleFX();
 	}
 }

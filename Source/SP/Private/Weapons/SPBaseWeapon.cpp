@@ -3,7 +3,8 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
-
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 ASPBaseWeapon::ASPBaseWeapon()
 {
@@ -103,6 +104,12 @@ bool ASPBaseWeapon::IsAmmoEmpty()
 bool ASPBaseWeapon::IsClipEmpty()
 {
 	return CurrentAmmo.Bullets == 0;
+}
+
+UNiagaraComponent* ASPBaseWeapon::SpawnMuzzleFX()
+{
+	return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX,
+		WeaponMesh, MuzzleSocketName, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::SnapToTarget, true);
 }
 
 void ASPBaseWeapon::ChangeClip()

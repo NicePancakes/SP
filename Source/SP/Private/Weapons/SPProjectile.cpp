@@ -42,7 +42,6 @@ void ASPProjectile::OnProjectileHit(
 	MovementComponent->StopMovementImmediately();
 
 	UGameplayStatics::ApplyRadialDamage(GetWorld(), DamageAmount, GetActorLocation(), DamageRadius, UDamageType::StaticClass(), {GetOwner()}, this, GetController(), bDoFullDamage);
-	DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 32, FColor::Red, false, 5.0f, 0, 3.0f);
 	WeaponFXComponent->PlayImpactFX(Hit);
 	
 	Destroy();

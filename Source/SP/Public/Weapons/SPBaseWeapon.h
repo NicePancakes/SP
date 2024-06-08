@@ -5,6 +5,8 @@
 #include "SPBaseWeapon.generated.h"
 
 class USkeletalMeshComponent;
+class UNiagaraSystem;
+class UNiagaraComponent;
 
 USTRUCT(BlueprintType)
 struct FAmmoData
@@ -69,6 +71,8 @@ protected:
 	void DecreaseAmmo();
 	bool IsAmmoEmpty();
 	bool IsClipEmpty();
+
+	UNiagaraComponent* SpawnMuzzleFX();
 	
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
@@ -85,6 +89,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	FWeaponUIData UIData;
+
+	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	TObjectPtr<UNiagaraSystem> MuzzleFX;
 
 	UPROPERTY()
 	FAmmoData CurrentAmmo;
