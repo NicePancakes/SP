@@ -43,20 +43,14 @@ public:
 protected:
 
 	virtual bool Initialize() override;
-
 	void OnHealthChanged(float Health, float HealthDelta);
-	
+
 	template<typename T>
-	T* GetComponent() const
+	static T* GetPlayerComponent(APawn* PlayerPawn)
 	{
-		APawn* Player = GetOwningPlayerPawn();
-		if(IsValid(Player))
+		if(IsValid(PlayerPawn))
 		{
-			T* Component = Cast<T>(Player->GetComponentByClass(T::StaticClass()));
-			if(IsValid(Component))
-			{
-				return Component;
-			}
+			return PlayerPawn->GetComponentByClass<T>();
 		}
 		return nullptr;
 	}

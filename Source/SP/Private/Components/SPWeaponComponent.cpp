@@ -173,6 +173,8 @@ void USPWeaponComponent::OnReloadFinished(USkeletalMeshComponent* MeshComp)
 
 bool USPWeaponComponent::CanFire() const
 {
+	UE_LOG(LogTemp, Warning, TEXT("bIsEquipAnimInProgress: %d"), bIsEquipAnimInProgress)
+	UE_LOG(LogTemp, Warning, TEXT("bIsReloadAnimInProgress: %d"), bIsReloadAnimInProgress)
 	return IsValid(CurrentWeapon) && !bIsEquipAnimInProgress && !bIsReloadAnimInProgress;
 }
 

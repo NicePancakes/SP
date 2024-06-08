@@ -15,7 +15,7 @@ void UPlayerHUDWidget::NativeDestruct()
 
 bool UPlayerHUDWidget::Initialize()
 {
-	USPHealthComponent* HealthComponent = GetComponent<USPHealthComponent>();
+	USPHealthComponent* HealthComponent = GetPlayerComponent<USPHealthComponent>(GetOwningPlayerPawn());
 	if(IsValid(HealthComponent))
 	{
 		HealthComponent->GetOnHealthChanged().AddUObject(this, &ThisClass::OnHealthChanged);
@@ -25,7 +25,7 @@ bool UPlayerHUDWidget::Initialize()
 
 float UPlayerHUDWidget::GetHealthPercent() const
 {
-	USPHealthComponent* HealthComponent = GetComponent<USPHealthComponent>();
+	USPHealthComponent* HealthComponent = GetPlayerComponent<USPHealthComponent>(GetOwningPlayerPawn());
 	if(IsValid(HealthComponent))
 	{
 		return HealthComponent->GetHealthPercent();
@@ -35,7 +35,7 @@ float UPlayerHUDWidget::GetHealthPercent() const
 
 bool UPlayerHUDWidget::GetCurrentWeaponUIData(FWeaponUIData& UIData) const
 {
-	USPWeaponComponent* WeaponComponent = GetComponent<USPWeaponComponent>();
+	USPWeaponComponent* WeaponComponent = GetPlayerComponent<USPWeaponComponent>(GetOwningPlayerPawn());
 	if(IsValid(WeaponComponent))
 	{
 		return WeaponComponent->GetWeaponUIData(UIData);
@@ -45,8 +45,7 @@ bool UPlayerHUDWidget::GetCurrentWeaponUIData(FWeaponUIData& UIData) const
 
 bool UPlayerHUDWidget::GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const
 {
-	//USPWeaponComponent* WeaponComponent = GetWeaponComponent();
-	USPWeaponComponent* WeaponComponent = GetComponent<USPWeaponComponent>();
+	USPWeaponComponent* WeaponComponent = GetPlayerComponent<USPWeaponComponent>(GetOwningPlayerPawn());
 	if(IsValid(WeaponComponent))
 	{
 		return WeaponComponent->GetWeaponAmmoData(AmmoData);
@@ -57,8 +56,12 @@ bool UPlayerHUDWidget::GetCurrentWeaponAmmoData(FAmmoData& AmmoData) const
 
 bool UPlayerHUDWidget::IsPlayerAlive() const
 {
-	USPHealthComponent* HealthComponent = GetComponent<USPHealthComponent>();
-	return IsValid(HealthComponent) && !HealthComponent->IsDead();
+	if(IsValid(GetOwningPlayerPawn()))
+	{
+		USPHealthComponent* HealthComponent = GetPlayerComponent<USPHealthComponent>(GetOwningPlayerPawn());
+		return IsValid(HealthComponent) && !HealthComponent->IsDead();
+	}
+	return false;
 }
 
 bool UPlayerHUDWidget::IsPlayerSpectating() const

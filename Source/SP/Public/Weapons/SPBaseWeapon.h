@@ -52,6 +52,7 @@ public:
 
 	void ChangeClip();
 	bool CanReload() const;
+	bool IsAmmoEmpty();
 
 	FOnClipEmptySignature& GetOnClipEmptySignature() { return OnClipEmpty; }
 	FWeaponUIData& GetUIData() { return UIData; }
@@ -69,7 +70,6 @@ protected:
 	
 	void MakeHit(FHitResult& HitResult, const FVector& TraceStart, const FVector& TraceEnd);
 	void DecreaseAmmo();
-	bool IsAmmoEmpty();
 	bool IsClipEmpty();
 
 	UNiagaraComponent* SpawnMuzzleFX();

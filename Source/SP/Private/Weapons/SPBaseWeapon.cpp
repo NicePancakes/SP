@@ -45,13 +45,22 @@ APlayerController* ASPBaseWeapon::GetPlayerController() const
 
 bool ASPBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
 {
-	APlayerController* PlayerController = GetPlayerController();
-	if(IsValid(PlayerController))
+	ACharacter* PlayerCharacter = Cast<ACharacter>(GetOwner());
+	if(!IsValid(PlayerCharacter)) return false;
+	
+	if(PlayerCharacter->IsPlayerControlled())
 	{
+		APlayerController* PlayerController = GetPlayerController();
+		if(!IsValid(PlayerController)) return false;
+		
 		PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);
-		return true;
 	}
-	return false;
+	else
+	{
+		ViewLocation = GetMuzzleWorldLocation();
+		ViewRotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
+	}
+	return true;
 }
 
 FVector ASPBaseWeapon::GetMuzzleWorldLocation() const

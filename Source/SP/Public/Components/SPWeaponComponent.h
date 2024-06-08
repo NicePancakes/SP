@@ -29,9 +29,9 @@ class SP_API USPWeaponComponent : public UActorComponent
 public:	
 	USPWeaponComponent();
 
-	void StartFire();
+	virtual void StartFire();
+	virtual void NextWeapon();
 	void StopFire();
-	void NextWeapon();
 	void Reload();
 
 	bool GetWeaponUIData(FWeaponUIData& UIData) const;
