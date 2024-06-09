@@ -17,7 +17,7 @@ ASPProjectile::ASPProjectile()
 
 	MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("MovementComponent"));
 	MovementComponent->InitialSpeed = 2000.0f;
-	MovementComponent->ProjectileGravityScale = 0.5f;
+	MovementComponent->ProjectileGravityScale = 0.0f;
 
 	WeaponFXComponent = CreateDefaultSubobject<USPWeaponFXComponent>(TEXT("WeaponFXComponent"));
 

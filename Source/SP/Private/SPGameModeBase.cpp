@@ -27,7 +27,7 @@ void ASPGameModeBase::StartPlay()
 	CurrentRound = 1;
 	StartRound();
 	
-	SetMatchState(ESPMathState::InProgress);
+	SetMatchState(ESPMatchState::InProgress);
 }
 
 void ASPGameModeBase::Killed(AController* KillerController, AController* VictimController)
@@ -52,6 +52,16 @@ void ASPGameModeBase::RespawnRequest(AController* Controller)
 	ResetOnePlayer(Controller);
 }
 
+bool ASPGameModeBase::ClearPause()
+{
+	bool IsPauseCleared = Super::ClearPause();
+	if(IsPauseCleared)
+	{
+		SetMatchState(ESPMatchState::InProgress);
+	}
+	return IsPauseCleared;
+}
+
 void ASPGameModeBase::SpawnBots()
 {
 	for(int32 i = 0; i < GameData.PlayersNum - 1; i++)
@@ -71,6 +81,16 @@ UClass* ASPGameModeBase::GetDefaultPawnClassForController_Implementation(AContro
 		return  AIPawnClass;
 	}
 	return Super::GetDefaultPawnClassForController_Implementation(InController);
+}
+
+bool ASPGameModeBase::SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate)
+{
+	bool bIsPauseSet = Super::SetPause(PC, CanUnpauseDelegate);
+	if(bIsPauseSet)
+	{
+		SetMatchState(ESPMatchState::Pause);
+	}
+	return bIsPauseSet;
 }
 
 void ASPGameModeBase::StartRound()
@@ -118,7 +138,8 @@ void ASPGameModeBase::ResetOnePlayer(AController* Controller)
 void ASPGameModeBase::CreateTeamsInfo()
 {
 	int32 TeamID = 1;
-	for(FConstControllerIterator It  = GetWorld()->GetControllerIterator(); It; ++It)
+	int32 BotCounter = 1;
+	for(FConstControllerIterator It  = GetWorld()->GetControllerIterator(); It; ++It, BotCounter++)
 	{
 		AController* Controller = It->Get();
 		if(IsValid(Controller))
@@ -128,6 +149,7 @@ void ASPGameModeBase::CreateTeamsInfo()
 			{
 				PlayerState->SetTeamID(TeamID);
 				PlayerState->SetTeamColor(DetermineColorByTeamID(TeamID));
+				PlayerState->SetPlayerName(Controller->IsPlayerController() ? "Player" : "Bot" + FString::FromInt(BotCounter));
 				SetPlayerColor(Controller);
 				TeamID = TeamID == 1 ? 2 : 1;
 			}
@@ -198,10 +220,10 @@ void ASPGameModeBase::GameOver()
 		}
 	}
 
-	SetMatchState(ESPMathState::GameOver);
+	SetMatchState(ESPMatchState::GameOver);
 }
 
-void ASPGameModeBase::SetMatchState(ESPMathState State)
+void ASPGameModeBase::SetMatchState(ESPMatchState State)
 {
 	if(CurrentMathState != State)
 	{

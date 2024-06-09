@@ -35,7 +35,7 @@ public:
 };
 
 UENUM(BlueprintType)
-enum ESPMathState
+enum ESPMatchState
 {
 	WaitingToStart = 0,
 	InProgress,
@@ -48,7 +48,7 @@ class SP_API ASPGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
-	DECLARE_MULTICAST_DELEGATE_OneParam(FOnMathStateChangedSignature, ESPMathState)
+	DECLARE_MULTICAST_DELEGATE_OneParam(FOnMathStateChangedSignature, ESPMatchState)
 
 public:
 	ASPGameModeBase();
@@ -63,11 +63,14 @@ public:
 
 	void RespawnRequest(AController* Controller);
 
-	FOnMathStateChangedSignature& GetOnMathStateChangedSignature() { return OnMathStateChanged; }
+	FOnMathStateChangedSignature& GetOnMatchStateChangedSignature() { return OnMathStateChanged; }
+
+	virtual bool ClearPause() override;
 
 protected:
 	void SpawnBots();
 	virtual UClass* GetDefaultPawnClassForController_Implementation(AController* InController) override;
+	virtual bool SetPause(APlayerController* PC, FCanUnpause CanUnpauseDelegate) override;
 
 	void StartRound();
 	void GameTimerUpdate();
@@ -84,7 +87,7 @@ protected:
 	void StartRespawn(AController* Controller);
 
 	void GameOver();
-	void SetMatchState(ESPMathState State);
+	void SetMatchState(ESPMatchState State);
 
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game")
@@ -96,7 +99,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Game")
 	FGameData GameData;
 
-	ESPMathState CurrentMathState = ESPMathState::WaitingToStart;
+	ESPMatchState CurrentMathState = ESPMatchState::WaitingToStart;
 
 	int32 CurrentRound = 1;
 	int32 RoundCountDown = 0;

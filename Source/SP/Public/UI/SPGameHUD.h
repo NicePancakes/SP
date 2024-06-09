@@ -19,13 +19,22 @@ protected:
 
 	void DrawCrossHair();
 
-	void OnMatchStateChanged(ESPMathState State);
+	void OnMatchStateChanged(ESPMatchState State);
 ;
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSubclassOf<UPlayerHUDWidget> PlayerHUDWidgetClass;
+	TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> PauseWidgetClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> GameOverWidgetClass;
 
 	UPROPERTY()
-	TObjectPtr<UPlayerHUDWidget> PlayerHUDWidget;
+	TObjectPtr<UUserWidget> CurrentPlayerWidget;
+
+	UPROPERTY()
+	TMap<TEnumAsByte<ESPMatchState>, TObjectPtr<UUserWidget>> GameWidgets;
 	
 };

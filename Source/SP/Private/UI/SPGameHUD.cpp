@@ -7,17 +7,21 @@
 void ASPGameHUD::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	GameWidgets.Emplace(ESPMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
+	GameWidgets.Emplace(ESPMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
+	GameWidgets.Emplace(ESPMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
 
-	PlayerHUDWidget = CreateWidget<UPlayerHUDWidget>(GetWorld(), PlayerHUDWidgetClass);
-	if(IsValid(PlayerHUDWidget))
+	for(const TPair<ESPMatchState, TObjectPtr<UUserWidget>>& GameWidgetPair : GameWidgets)
 	{
-		PlayerHUDWidget->AddToViewport();
+		GameWidgetPair.Value->AddToViewport();
+		GameWidgetPair.Value->SetVisibility(ESlateVisibility::Hidden);
 	}
 
 	ASPGameModeBase* GameMode = Cast<ASPGameModeBase>(GetWorld()->GetAuthGameMode());
 	if(IsValid(GameMode))
 	{
-		GameMode->GetOnMathStateChangedSignature().AddUObject(this, &ThisClass::OnMatchStateChanged);
+		GameMode->GetOnMatchStateChangedSignature().AddUObject(this, &ThisClass::OnMatchStateChanged);
 	}
 }
 
@@ -40,7 +44,17 @@ void ASPGameHUD::DrawCrossHair()
 	DrawLine(Center.Min, Center.Max - HalfLineSize, Center.Min, Center.Max + HalfLineSize, LineColor, LineThickness);
 }
 
-void ASPGameHUD::OnMatchStateChanged(ESPMathState State)
+void ASPGameHUD::OnMatchStateChanged(ESPMatchState State)
 {
+	if(IsValid(CurrentPlayerWidget))
+	{
+		CurrentPlayerWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	if(GameWidgets.Contains(State))
+	{
+		CurrentPlayerWidget = GameWidgets[State];
+		CurrentPlayerWidget->SetVisibility(ESlateVisibility::Visible);
+	}
 	UE_LOG(LogTemp, Error, TEXT("Math state changed: %s"), *UEnum::GetValueAsString(State))	
 }
