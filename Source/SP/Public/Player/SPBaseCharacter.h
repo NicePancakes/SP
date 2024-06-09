@@ -27,6 +27,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Movement")
 	float GetMovementDirection() const;
 
+	void SetPlayerColor(const FLinearColor& Color);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnDeath();
@@ -74,7 +76,10 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "LifeTime")
 	float LifeTime = 5.0f;
-	
+
+
+	UPROPERTY(EditDefaultsOnly, Category = "Material")
+	FName MaterialColorName = "Paint Color";
 	
 	bool bIsWantRun = false;
 	bool bIsMoveForward = false;

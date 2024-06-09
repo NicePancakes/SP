@@ -7,7 +7,7 @@
 ASPAIBaseCharacter::ASPAIBaseCharacter(const FObjectInitializer& ObjectInitializer) 
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<USPAIWeaponComponent>("WeaponComponent"))
 {
-	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+	AutoPossessAI = EAutoPossessAI::Disabled;
 	AIControllerClass = ASPAIController::StaticClass();
 
 	bUseControllerRotationYaw = false;

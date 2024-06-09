@@ -28,21 +28,6 @@ void ASPBaseWeapon::BeginPlay()
 	CurrentAmmo = DefaultAmmo;
 }
 
-APlayerController* ASPBaseWeapon::GetPlayerController() const
-{
-	const ACharacter* Player = Cast<ACharacter>(GetOwner());
-	if(IsValid(Player))
-	{
-		APlayerController* Controller = Player->GetController<APlayerController>();
-		if(IsValid(Controller))
-		{
-			return Controller;
-		}
-		return nullptr;
-	}
-	return nullptr;
-}
-
 bool ASPBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const
 {
 	ACharacter* PlayerCharacter = Cast<ACharacter>(GetOwner());
@@ -50,7 +35,7 @@ bool ASPBaseWeapon::GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRota
 	
 	if(PlayerCharacter->IsPlayerControlled())
 	{
-		APlayerController* PlayerController = GetPlayerController();
+		APlayerController* PlayerController =  PlayerCharacter->GetController<APlayerController>();
 		if(!IsValid(PlayerController)) return false;
 		
 		PlayerController->GetPlayerViewPoint(ViewLocation, ViewRotation);

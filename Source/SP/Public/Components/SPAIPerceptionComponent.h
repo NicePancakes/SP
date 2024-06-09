@@ -5,6 +5,8 @@
 #include "SPAIPerceptionComponent.generated.h"
 
 
+class ASPPlayerState;
+
 UCLASS()
 class SP_API USPAIPerceptionComponent : public UAIPerceptionComponent
 {
@@ -12,5 +14,8 @@ class SP_API USPAIPerceptionComponent : public UAIPerceptionComponent
 
 public:
 	AActor* GetClosestEnemy() const;
+
+protected:
+	bool CheckHostility(AController* Controller1, AController* Controller2) const;
 	
 };

@@ -63,8 +63,7 @@ protected:
 
 	virtual void MakeShot() {};
 	virtual bool GetTraceData(FVector& TraceStart, FVector& TraceEnd) const;
-
-	APlayerController* GetPlayerController() const;
+	
 	bool GetPlayerViewPoint(FVector& ViewLocation, FRotator& ViewRotation) const;
 	FVector GetMuzzleWorldLocation() const;
 	
@@ -82,7 +81,7 @@ protected:
 	FName MuzzleSocketName = "MuzzleSocket";
 
 	UPROPERTY(EditDefaultsOnly)
-	float TraceLength = 1500.0f;
+	float TraceLength = 5000.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
 	FAmmoData DefaultAmmo;

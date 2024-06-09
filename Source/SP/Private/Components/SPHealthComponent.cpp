@@ -2,6 +2,7 @@
 #include "GameFramework/Pawn.h"
 #include "GameFramework/Controller.h"
 #include "Camera/CameraShakeBase.h"
+#include "SPGameModeBase.h"
 
 USPHealthComponent::USPHealthComponent()
 {
@@ -33,6 +34,7 @@ void USPHealthComponent::OnTakeAnyDamage(
 	
 	if(IsDead())
 	{
+		Killed(InstigatedBy);
 		OnDeath.Broadcast();
 	}
 	else if(AutoHeal)
@@ -71,5 +73,16 @@ void USPHealthComponent::PlayCameraShake()
 		{
 			Controller->PlayerCameraManager->StartCameraShake(CameraShake);
 		}
+	}
+}
+
+void USPHealthComponent::Killed(AController* KillerController)
+{
+	ASPGameModeBase* GameMode = Cast<ASPGameModeBase>(GetWorld()->GetAuthGameMode());
+	if(IsValid(GameMode))
+	{
+		APawn* Player = Cast<APawn>(GetOwner());
+		AController* VictimController = IsValid(Player) ? Player->Controller : nullptr;
+		GameMode->Killed(KillerController, VictimController);
 	}
 }

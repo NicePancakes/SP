@@ -1,12 +1,17 @@
 #include "AI/SPAIController.h"
 #include "AI/SPAIBaseCharacter.h"
 #include "Components/SPAIPerceptionComponent.h"
+#include "Components/SPRespawnComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 ASPAIController::ASPAIController()
 {
 	AIPerceptionComponent = CreateDefaultSubobject<USPAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 	SetPerceptionComponent(*AIPerceptionComponent);
+
+	RespawnComponent = CreateDefaultSubobject<USPRespawnComponent>(TEXT("RespawnComponent"));
+
+	bWantsPlayerState = true;
 }
 
 void ASPAIController::OnPossess(APawn* InPawn)

@@ -27,6 +27,7 @@ protected:
 	void InitMuzzleFX();
 	void SetMuzzleFXVisibility(bool bIsVisible);
 	void SpawnTraceFX(const FVector& StartTrace, const FVector& EndTrace);
+	AController* GetController() const;
 
 protected:
 	UPROPERTY(EditDefaultsOnly)

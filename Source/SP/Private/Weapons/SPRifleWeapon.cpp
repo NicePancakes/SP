@@ -76,7 +76,7 @@ void ASPRifleWeapon::MakeDamage(const FHitResult& HitResult)
 	AActor* DamageActor = HitResult.GetActor();
 	if(IsValid(DamageActor))
 	{
-		DamageActor->TakeDamage(DamageAmount, FDamageEvent(), GetPlayerController(), this);
+		DamageActor->TakeDamage(DamageAmount, FDamageEvent(), GetController(), this);
 	}
 }
 
@@ -107,4 +107,13 @@ void ASPRifleWeapon::SpawnTraceFX(const FVector& StartTrace, const FVector& EndT
 	}
 }
 
+AController* ASPRifleWeapon::GetController() const
+{
+	const APawn* Pawn = Cast<APawn>(GetOwner());
+	if(IsValid(Pawn))
+	{
+		return  Pawn->GetController();
+	}
+	return nullptr;
+}
 

@@ -13,6 +13,12 @@ void ASPGameHUD::BeginPlay()
 	{
 		PlayerHUDWidget->AddToViewport();
 	}
+
+	ASPGameModeBase* GameMode = Cast<ASPGameModeBase>(GetWorld()->GetAuthGameMode());
+	if(IsValid(GameMode))
+	{
+		GameMode->GetOnMathStateChangedSignature().AddUObject(this, &ThisClass::OnMatchStateChanged);
+	}
 }
 
 void ASPGameHUD::DrawHUD()
@@ -32,4 +38,9 @@ void ASPGameHUD::DrawCrossHair()
 	
 	DrawLine(Center.Min - HalfLineSize, Center.Max, Center.Min + HalfLineSize, Center.Max, LineColor, LineThickness);
 	DrawLine(Center.Min, Center.Max - HalfLineSize, Center.Min, Center.Max + HalfLineSize, LineColor, LineThickness);
+}
+
+void ASPGameHUD::OnMatchStateChanged(ESPMathState State)
+{
+	UE_LOG(LogTemp, Error, TEXT("Math state changed: %s"), *UEnum::GetValueAsString(State))	
 }

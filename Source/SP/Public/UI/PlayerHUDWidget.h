@@ -44,6 +44,7 @@ protected:
 
 	virtual bool Initialize() override;
 	void OnHealthChanged(float Health, float HealthDelta);
+	void OnNewPawn(APawn* NewPawn);
 
 	template<typename T>
 	static T* GetPlayerComponent(APawn* PlayerPawn)

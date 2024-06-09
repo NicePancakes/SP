@@ -38,6 +38,8 @@ private:
 	void SetHealth(float Health);
 	void PlayCameraShake();
 
+	void Killed(AController* KillerController);
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1000.0"))
 	float MaxHealth = 100.0f;

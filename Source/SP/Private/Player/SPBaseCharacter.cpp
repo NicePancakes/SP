@@ -153,3 +153,12 @@ float ASPBaseCharacter::GetMovementDirection() const
 	return CrossProduct.IsZero() ? Degrees : Degrees * FMath::Sign(CrossProduct.Z);
 }
 
+void ASPBaseCharacter::SetPlayerColor(const FLinearColor& Color)
+{
+	UMaterialInstanceDynamic* MaterialInstance = GetMesh()->CreateAndSetMaterialInstanceDynamic(0);
+	if(IsValid(MaterialInstance))
+	{
+		MaterialInstance->SetVectorParameterValue(MaterialColorName, Color);
+	}
+}
+

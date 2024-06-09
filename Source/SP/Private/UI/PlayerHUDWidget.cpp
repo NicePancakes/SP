@@ -15,10 +15,10 @@ void UPlayerHUDWidget::NativeDestruct()
 
 bool UPlayerHUDWidget::Initialize()
 {
-	USPHealthComponent* HealthComponent = GetPlayerComponent<USPHealthComponent>(GetOwningPlayerPawn());
-	if(IsValid(HealthComponent))
+	if(IsValid(GetOwningPlayer()))
 	{
-		HealthComponent->GetOnHealthChanged().AddUObject(this, &ThisClass::OnHealthChanged);
+		GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this, &ThisClass::OnNewPawn);
+		OnNewPawn(GetOwningPlayerPawn());
 	}
 	return Super::Initialize();
 }
@@ -75,5 +75,14 @@ void UPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
 	if(HealthDelta < 0)
 	{
 		OnTakeDamage();
+	}
+}
+
+void UPlayerHUDWidget::OnNewPawn(APawn* NewPawn)
+{
+	USPHealthComponent* HealthComponent = GetPlayerComponent<USPHealthComponent>(NewPawn);
+	if(IsValid(HealthComponent))
+	{
+		HealthComponent->GetOnHealthChanged().AddUObject(this, &ThisClass::OnHealthChanged);
 	}
 }

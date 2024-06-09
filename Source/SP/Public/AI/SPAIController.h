@@ -5,6 +5,7 @@
 #include "SPAIController.generated.h"
 
 class USPAIPerceptionComponent;
+class USPRespawnComponent;
 
 UCLASS()
 class SP_API ASPAIController : public AAIController
@@ -22,6 +23,9 @@ protected:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category  = "Components")
 	TObjectPtr<USPAIPerceptionComponent> AIPerceptionComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category  = "Components")
+	TObjectPtr<USPRespawnComponent> RespawnComponent;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	FName FocusOnKeyName = "EnemyActor";

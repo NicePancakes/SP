@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SPGameModeBase.h"
 #include "GameFramework/HUD.h"
 #include "SPGameHUD.generated.h"
 
@@ -18,6 +19,8 @@ protected:
 
 	void DrawCrossHair();
 
+	void OnMatchStateChanged(ESPMathState State);
+;
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UPlayerHUDWidget> PlayerHUDWidgetClass;
