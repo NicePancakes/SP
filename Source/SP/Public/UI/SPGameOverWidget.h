@@ -20,6 +20,8 @@ protected:
 	void OnMatchStateChanged(ESPMatchState State);
 	void UpdatePlayersStat();
 
+	//void SortByKills();
+
 protected:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UVerticalBox> PlayerStatBox;

@@ -47,4 +47,37 @@ void USPGameOverWidget::UpdatePlayersStat()
 
 		PlayerStatBox->AddChild(PlayerStatTableWidget);
 	}
+
+	
 }
+
+// void USPGameOverWidget::SortByKills()
+// {
+// 	TArray<USPPlayerStatTableWidget*> WidgetsTable;
+//
+// 	int32 CurrentMaxKills = 0;
+// 	int32 TopPlayerIdx = 0;
+// 	for(int32 i = 0; i < PlayerStatBox->GetChildrenCount(); i++)
+// 	{
+// 		for(int32 j = i; j < PlayerStatBox->GetChildrenCount(); j++)
+// 		{
+// 			USPPlayerStatTableWidget* Widget = Cast<USPPlayerStatTableWidget>(PlayerStatBox->GetAllChildren()[i]);
+// 			if(Widget->GetKillNums() > CurrentMaxKills)
+// 			{
+// 				CurrentMaxKills = Widget->GetKillNums();
+// 				TopPlayerIdx = j;
+// 			}
+// 		}
+// 		USPPlayerStatTableWidget* Widget = Cast<USPPlayerStatTableWidget>(PlayerStatBox->GetAllChildren()[TopPlayerIdx]);
+// 		WidgetsTable.Add(Widget);
+// 		
+// 		CurrentMaxKills = 0;
+// 		TopPlayerIdx = 0;
+// 	}
+//
+// 	PlayerStatBox->ClearChildren();
+// 	for(USPPlayerStatTableWidget* Widget : WidgetsTable)
+// 	{
+// 		PlayerStatBox->AddChild(Widget);
+// 	}
+// }

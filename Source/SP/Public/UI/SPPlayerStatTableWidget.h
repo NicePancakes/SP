@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/TextBlock.h"
 #include "SPPlayerStatTableWidget.generated.h"
 
 class UImage;
@@ -18,6 +19,8 @@ public:
 	void SetDeathText(int32 DeathNum);
 	void SetTeamIDText(int32 TeamID);
 	void SetPlayerIndicatorVisibility(bool bIsVisible);
+
+	int32 GetKillNums() const { return FCString::Atoi(*KillsText->GetText().ToString());}
 
 protected:
 	FText FormatFromIntToFText(int32 Num);
