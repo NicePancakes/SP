@@ -11,10 +11,9 @@ class SP_API USPGameInstance : public UGameInstance
 	GENERATED_BODY()
 
 public:
-	const FName& GetStartupLevelName() const { return StartupLevelName; }
-	
-protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Game")
-	FName StartupLevelName = NAME_None;
-	
+	void SetPlayerCounts(int32 PlayerCounts) { PlayersNum = PlayerCounts; };
+	int32 GetPlayerNum() const {return PlayersNum; }
+
+private:
+	int32 PlayersNum = 0;
 };

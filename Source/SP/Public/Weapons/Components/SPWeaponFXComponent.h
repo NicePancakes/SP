@@ -37,6 +37,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "VFX")
 	FDecalData DecalData;
+
+	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	USoundCue* Sound;
 };
 
 UCLASS()

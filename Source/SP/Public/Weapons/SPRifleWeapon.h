@@ -7,6 +7,7 @@
 class USPWeaponFXComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
+class USoundCue;
 
 UCLASS()
 class SP_API ASPRifleWeapon : public ASPBaseWeapon
@@ -47,6 +48,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "VFX")
 	TObjectPtr<USPWeaponFXComponent> WeaponFXComponent;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "VFX")
+	TObjectPtr<UAudioComponent> FireSoundComponent;
 
 	UPROPERTY()
 	TObjectPtr<UNiagaraComponent> MuzzleFXComponent;

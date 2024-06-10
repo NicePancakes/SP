@@ -8,6 +8,7 @@
 #include "Player/SPPlayerState.h"
 #include "Components/SPRespawnComponent.h"
 #include "EngineUtils.h"
+#include "SPGameInstance.h"
 
 ASPGameModeBase::ASPGameModeBase()
 {
@@ -21,6 +22,9 @@ void ASPGameModeBase::StartPlay()
 {
 	Super::StartPlay();
 
+	USPGameInstance* GameInstance = Cast<USPGameInstance>(GetGameInstance());
+	GameData.PlayersNum = GameInstance->GetPlayerNum();
+	
 	SpawnBots();
 	CreateTeamsInfo();
 

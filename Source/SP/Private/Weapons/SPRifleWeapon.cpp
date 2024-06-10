@@ -3,10 +3,14 @@
 #include "Weapons/Components/SPWeaponFXComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Components/AudioComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 ASPRifleWeapon::ASPRifleWeapon()
 {
 	WeaponFXComponent = CreateDefaultSubobject<USPWeaponFXComponent>(TEXT("WeaponFXComponent"));
+	FireSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FireSoundComponent"));
 }
 
 void ASPRifleWeapon::BeginPlay()
@@ -14,6 +18,7 @@ void ASPRifleWeapon::BeginPlay()
 	Super::BeginPlay();
 	
 	check(WeaponFXComponent);
+	FireSoundComponent->Stop();
 }
 
 void ASPRifleWeapon::StartFire()
@@ -22,6 +27,7 @@ void ASPRifleWeapon::StartFire()
 	GetWorld()->GetTimerManager().SetTimer(ShotTimerHandle, this, &ThisClass::MakeShot, TimeBetweenShots, true);
 	MakeShot();
 	bIsFirstShot = false;
+	FireSoundComponent = UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSoundComponent->Sound, GetMuzzleWorldLocation());
 }
 
 void ASPRifleWeapon::StopFire()
@@ -29,6 +35,7 @@ void ASPRifleWeapon::StopFire()
 	GetWorld()->GetTimerManager().ClearTimer(ShotTimerHandle);
 	bIsFirstShot = true;
 	SetMuzzleFXVisibility(false);
+	FireSoundComponent->Stop();
 }
 
 void ASPRifleWeapon::MakeShot()

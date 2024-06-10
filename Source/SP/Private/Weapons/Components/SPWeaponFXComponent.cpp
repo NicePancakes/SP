@@ -3,7 +3,7 @@
 #include "PhysicalMaterials/PhysicalMaterial.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "Sound/SoundCue.h"
 
 USPWeaponFXComponent::USPWeaponFXComponent()
 {
@@ -30,5 +30,7 @@ void USPWeaponFXComponent::PlayImpactFX(const FHitResult& HitResults)
 	{
 		DecalComponent->SetFadeOut(ImpactData.DecalData.LifeTime, ImpactData.DecalData.FadeOutTime);
 	}
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactData.Sound, HitResults.ImpactPoint);
 }
 
