@@ -41,8 +41,8 @@ void USPGameOverWidget::UpdatePlayersStat()
 
 		PlayerStatTableWidget->SetNameText(FText::FromString(PlayerState->GetPlayerName()));
 		PlayerStatTableWidget->SetKillsText(PlayerState->GetKillsNum());
-		PlayerStatTableWidget->SetDeathText(PlayerState->GetKillsNum());
-		PlayerStatTableWidget->SetTeamIDText(PlayerState->GetKillsNum());
+		PlayerStatTableWidget->SetDeathText(PlayerState->GetDeathsNum());
+		PlayerStatTableWidget->SetTeamIDText(PlayerState->GetTeamID());
 		PlayerStatTableWidget->SetPlayerIndicatorVisibility(Controller->IsPlayerController());
 
 		PlayerStatBox->AddChild(PlayerStatTableWidget);

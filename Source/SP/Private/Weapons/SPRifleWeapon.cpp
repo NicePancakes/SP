@@ -10,15 +10,18 @@
 ASPRifleWeapon::ASPRifleWeapon()
 {
 	WeaponFXComponent = CreateDefaultSubobject<USPWeaponFXComponent>(TEXT("WeaponFXComponent"));
-	FireSoundComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FireSoundComponent"));
+	FireAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("FireSoundComponent"));
+	FireAudioComponent->SetupAttachment(RootComponent);
 }
 
 void ASPRifleWeapon::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	check(WeaponFXComponent);
-	FireSoundComponent->Stop();
+	check(FireAudioComponent);
+	
+	FireAudioComponent->Stop();
 }
 
 void ASPRifleWeapon::StartFire()
@@ -27,7 +30,11 @@ void ASPRifleWeapon::StartFire()
 	GetWorld()->GetTimerManager().SetTimer(ShotTimerHandle, this, &ThisClass::MakeShot, TimeBetweenShots, true);
 	MakeShot();
 	bIsFirstShot = false;
-	FireSoundComponent = UGameplayStatics::SpawnSoundAtLocation(GetWorld(), FireSoundComponent->Sound, GetMuzzleWorldLocation());
+
+	if(IsValid(FireAudioComponent))
+	{
+		FireAudioComponent->FadeIn(0.2f);
+	}
 }
 
 void ASPRifleWeapon::StopFire()
@@ -35,7 +42,10 @@ void ASPRifleWeapon::StopFire()
 	GetWorld()->GetTimerManager().ClearTimer(ShotTimerHandle);
 	bIsFirstShot = true;
 	SetMuzzleFXVisibility(false);
-	FireSoundComponent->Stop();
+	if(IsValid(FireAudioComponent))
+	{
+		FireAudioComponent->FadeOut(0.3, 0.0f);
+	}
 }
 
 void ASPRifleWeapon::MakeShot()

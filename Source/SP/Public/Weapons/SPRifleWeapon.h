@@ -50,7 +50,7 @@ protected:
 	TObjectPtr<USPWeaponFXComponent> WeaponFXComponent;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "VFX")
-	TObjectPtr<UAudioComponent> FireSoundComponent;
+	TObjectPtr<UAudioComponent> FireAudioComponent;
 
 	UPROPERTY()
 	TObjectPtr<UNiagaraComponent> MuzzleFXComponent;

@@ -12,7 +12,7 @@ void ASPGameHUD::BeginPlay()
 	GameWidgets.Emplace(ESPMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
 	GameWidgets.Emplace(ESPMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
 
-	for(const TPair<ESPMatchState, TObjectPtr<UUserWidget>>& GameWidgetPair : GameWidgets)
+	for(const auto & GameWidgetPair : GameWidgets)
 	{
 		GameWidgetPair.Value->AddToViewport();
 		GameWidgetPair.Value->SetVisibility(ESlateVisibility::Hidden);
