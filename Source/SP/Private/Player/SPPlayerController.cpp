@@ -1,4 +1,6 @@
 #include "Player/SPPlayerController.h"
+
+#include "SPGameInstance.h"
 #include "Components/SPRespawnComponent.h"
 #include "GameFramework/GameModeBase.h"
 
@@ -11,9 +13,23 @@ void ASPPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	if(IsValid(InputComponent))
+	USPGameInstance* GameInstance = Cast<USPGameInstance>(GetGameInstance());
+	if(IsValid(GameInstance))
 	{
-		InputComponent->BindAction("PauseGame", IE_Pressed, this, &ThisClass::OnPauseGame);
+		if(GameInstance->GetIsLeftHandMode())
+		{
+			if(IsValid(InputComponent))
+			{
+				InputComponent->BindAction("PauseGameLeftMode", IE_Pressed, this, &ThisClass::OnPauseGame);
+			}
+		}
+		else
+		{
+			if(IsValid(InputComponent))
+			{
+				InputComponent->BindAction("PauseGame", IE_Pressed, this, &ThisClass::OnPauseGame);
+			}
+		}
 	}
 }
 

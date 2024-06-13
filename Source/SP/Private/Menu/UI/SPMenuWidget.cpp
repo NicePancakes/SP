@@ -12,8 +12,10 @@ void USPMenuWidget::NativeConstruct()
 	StartGameButton->GetOnButtonClickedEvent().AddDynamic(this, &ThisClass::OnStartGameButtonPressed);
 	ExitButton->OnClicked.AddUniqueDynamic(this, &ThisClass::OnExitButtonPressed);
 	PlayerCountEditableTextBox->OnTextChanged.AddUniqueDynamic(this, &ThisClass::OnTextChanged);
+	LeftHandModeCheckBox->OnCheckStateChanged.AddUniqueDynamic(this, &ThisClass::OnCheckStateChanged);
 
 	PlayerCountEditableTextBox->SetForegroundColor(FLinearColor::White);
+	TutorialTextBlock->SetText(RightHandTextTip);
 }
 
 void USPMenuWidget::OnExitButtonPressed()
@@ -23,9 +25,9 @@ void USPMenuWidget::OnExitButtonPressed()
 
 void USPMenuWidget::OnStartGameButtonPressed()
 {
-	if(!PlayerCountEditableTextBox->GetText().IsEmpty())
+	int32 PlayerCounts = FCString::Atoi(*PlayerCountEditableTextBox->GetText().ToString());
+	if(!PlayerCountEditableTextBox->GetText().IsEmpty() && PlayerCounts > 0)
 	{
-		int32 PlayerCounts = FCString::Atoi(*PlayerCountEditableTextBox->GetText().ToString());
 		USPGameInstance* GameInstance = Cast<USPGameInstance>(GetGameInstance());
 		if(IsValid(GameInstance))
 		{
@@ -37,6 +39,7 @@ void USPMenuWidget::OnStartGameButtonPressed()
 	else
 	{
 		PlayerCountEditableTextBox->SetForegroundColor(FLinearColor::Red);
+		PlayerCountEditableTextBox->SetText(FText::FromString(TEXT("")));
 	}
 }
 
@@ -55,5 +58,23 @@ void USPMenuWidget::OnTextChanged(const FText& Text)
 	{
 		FString TextString = Text.ToString();
 		PlayerCountEditableTextBox->SetText(FText::FromString(TextString.LeftChop(1)));
+	}
+}
+
+void USPMenuWidget::OnCheckStateChanged(bool bIsChecked)
+{
+	USPGameInstance* GameInstance = Cast<USPGameInstance>(GetGameInstance());
+	if(IsValid(GameInstance))
+	{
+		GameInstance->SetIsLeftHandMode(bIsChecked);
+	}
+
+	if(bIsChecked)
+	{
+		TutorialTextBlock->SetText(LeftHandTextTip);
+	}
+	else
+	{
+		TutorialTextBlock->SetText(RightHandTextTip);
 	}
 }

@@ -1,4 +1,6 @@
 #include "Player/SPBaseCharacter.h"
+
+#include "SPGameInstance.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -122,16 +124,32 @@ void ASPBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	check(PlayerInputComponent);
 	check(WeaponComponent);
 
+	USPGameInstance* GameInstance = Cast<USPGameInstance>(GetGameInstance());
+	if(IsValid(GameInstance))
+	{
+		if(GameInstance->GetIsLeftHandMode())
+		{
+			PlayerInputComponent->BindAxis("MoveForwardLeftMode", this, &ThisClass::MoveForward);
+			PlayerInputComponent->BindAxis("MoveRightLeftMode", this, &ThisClass::MoveRight);
+			PlayerInputComponent->BindAction("ReloadLeftMode", IE_Pressed, WeaponComponent.Get(), &USPWeaponComponent::Reload);
+			PlayerInputComponent->BindAction("RunLeftMode", IE_Pressed, this, &ThisClass::OnStartRunning);
+			PlayerInputComponent->BindAction("RunLeftMode", IE_Released, this, &ThisClass::OnStopRunning);
+		}
+		else
+		{
+			PlayerInputComponent->BindAxis("MoveForward", this, &ThisClass::MoveForward);
+			PlayerInputComponent->BindAxis("MoveRight", this, &ThisClass::MoveRight);
+			PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent.Get(), &USPWeaponComponent::Reload);
+			PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ThisClass::OnStartRunning);
+			PlayerInputComponent->BindAction("Run", IE_Released, this, &ThisClass::OnStopRunning);
+		}
+	}
+
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ThisClass::Jump);
-	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ThisClass::OnStartRunning);
-	PlayerInputComponent->BindAction("Run", IE_Released, this, &ThisClass::OnStopRunning);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent.Get(), &USPWeaponComponent::StartFire);
 	PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent.Get(), &USPWeaponComponent::StopFire);
 	PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, WeaponComponent.Get(), &USPWeaponComponent::NextWeapon);
-	PlayerInputComponent->BindAction("Reload", IE_Pressed, WeaponComponent.Get(), &USPWeaponComponent::Reload);
 	
-	PlayerInputComponent->BindAxis("MoveForward", this, &ThisClass::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &ThisClass::MoveRight);
 	PlayerInputComponent->BindAxis("LookUp", this, &ThisClass::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("TurnAround", this, &ThisClass::AddControllerYawInput);
 
