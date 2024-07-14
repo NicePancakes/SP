@@ -44,7 +44,7 @@ void ASPRifleWeapon::StopFire()
 	SetMuzzleFXVisibility(false);
 	if(IsValid(FireAudioComponent))
 	{
-		FireAudioComponent->FadeOut(0.3, 0.0f);
+		FireAudioComponent->FadeOut(0.0, 0.0f);
 	}
 }
 

@@ -100,15 +100,15 @@ void ASPBaseCharacter::OnHealthChanged(float NewHealth, float HealthDelta)
 
 void ASPBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 {
+	GetCharacterMovement()->DisableMovement();
 	const float FallVelocity = -GetCharacterMovement()->Velocity.Z;
 
 	if(FallVelocity < LandedDamageVelocity.X) { return; }
 
 	const float FinalDamage = FMath::GetMappedRangeValueClamped(LandedDamageVelocity, LandedDamage, FallVelocity);
 	TakeDamage(FinalDamage, FDamageEvent{}, nullptr, nullptr);
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 }
-
-
 
 void ASPBaseCharacter::Tick(float DeltaTime)
 {
